@@ -1,6 +1,9 @@
 import type { ClaimBundle, ClaimSummary, DraftPayload } from "@/lib/types";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8741";
+// In the browser, call the API through this site so one address serves the app and the data.
+// On the server, talk to the local API directly.
+export const API_URL =
+  typeof window === "undefined" ? process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8741" : "";
 
 export class ApiError extends Error {
   status: number;
