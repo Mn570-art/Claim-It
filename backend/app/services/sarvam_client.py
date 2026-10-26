@@ -31,6 +31,8 @@ def map_sarvam_error(exc: Exception) -> None:
         raise SarvamTimeoutError("Sarvam did not respond before the timeout. Try again in a moment.") from exc
     if status == 429:
         raise AppError(429, "rate_limited", "Sarvam rate limit reached. Wait a moment and try again.") from exc
+    if status == 402:
+        raise AppError(402, "insufficient_quota", "Sarvam accepted the key, but this account has no credits left.") from exc
     if status in {401, 403}:
         raise AppError(502, "sarvam_auth", "Sarvam rejected the API key. Check SARVAM_API_KEY on the server.") from exc
     raise AppError(502, "sarvam_error", "Sarvam could not complete the request. Your documents were not changed.") from exc

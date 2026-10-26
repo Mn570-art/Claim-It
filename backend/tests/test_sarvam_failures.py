@@ -27,6 +27,10 @@ def test_timeout_and_rate_limit_mapping():
     with pytest.raises(Exception) as auth:
         map_sarvam_error(Boom(401))
     assert auth.value.code == "sarvam_auth"
+    with pytest.raises(Exception) as quota:
+        map_sarvam_error(Boom(402))
+    assert quota.value.status_code == 402
+    assert quota.value.code == "insufficient_quota"
 
 
 def test_invalid_model_output_is_repaired_once_then_rejected():
