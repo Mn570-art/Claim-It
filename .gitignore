@@ -1,0 +1,16 @@
+node_modules/
+.next/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.env
+.env.local
+*.db
+backend/data/
+.DS_Store
+dist/
+coverage/
+*.log
+agent-tools/
