@@ -97,6 +97,7 @@ export function Workspace() {
 
   const documentsPanel = (
     <div className="space-y-4">
+      <h2 className="text-sm font-medium">Documents</h2>
       <div className="flex flex-wrap gap-2">
         <Button type="button" variant="secondary" className="h-10" disabled={seeding} onClick={() => void attachSamples()}>
           {seeding ? "Attaching fictional papers…" : "Use fictional sample documents"}

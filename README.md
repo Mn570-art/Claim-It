@@ -25,7 +25,7 @@ npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
+Open [http://127.0.0.1:43123](http://127.0.0.1:43123). The dev server allows that host so the page stays interactive.
 
 The API listens on port **8741**. The Next.js app listens on port **43123**. `frontend/.env.example` sets `NEXT_PUBLIC_API_URL=http://127.0.0.1:8741`.
 

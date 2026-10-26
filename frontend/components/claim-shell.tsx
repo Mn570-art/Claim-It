@@ -78,8 +78,8 @@ export function ClaimShell({ id, children }: { id: string; children: React.React
 
   return (
     <ClaimContext.Provider value={{ bundle, reload, loading, error }}>
-      <div className="mx-auto max-w-6xl px-4 py-6">
-        {loading ? <p className="text-sm text-muted-foreground">Opening the claim…</p> : null}
+      <div className="mx-auto max-w-6xl space-y-4 px-4 py-6">
+        {loading && !bundle ? <p className="text-sm text-muted-foreground">Opening the claim…</p> : null}
         {error ? (
           <div className="rounded-xl border border-[#f1c7d2] bg-[#fff5f7] p-4 text-sm text-[#9f1239]">
             {error}
@@ -121,9 +121,9 @@ export function ClaimShell({ id, children }: { id: string; children: React.React
                 );
               })}
             </nav>
-            {children}
           </div>
         ) : null}
+        {children}
       </div>
     </ClaimContext.Provider>
   );
