@@ -1,9 +1,15 @@
 import type { ClaimBundle, ClaimSummary, DraftPayload } from "@/lib/types";
 
-// In the browser, call the API through this site so one address serves the app and the data.
-// On the server, talk to the local API directly.
-export const API_URL =
-  typeof window === "undefined" ? process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8741" : "";
+// Public links stay on this site. Vercel sends /api and /health to the backend service.
+// Server-side calls use the BACKEND_URL binding instead of a public hostname.
+export const API_URL = "";
+
+async function endpoint(path: string): Promise<string> {
+  const publicPath = path.startsWith("/") ? path : `/${path}`;
+  if (typeof window !== "undefined") return publicPath;
+  const { serverApiUrl } = await import("./server-backend");
+  return serverApiUrl(publicPath);
+}
 
 export class ApiError extends Error {
   status: number;
@@ -19,7 +25,7 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(`${API_URL}${path}`, {
+    response = await fetch(await endpoint(path), {
       ...init,
       headers: {
         ...(init?.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
@@ -27,7 +33,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       },
     });
   } catch {
-    throw new ApiError(0, "network", "Claim-It API is not reachable. Start the backend on port 8741.");
+    throw new ApiError(0, "network", "Claim-It API is not reachable. Locally, start the backend on port 8741.");
   }
   if (response.status === 204) return undefined as T;
   const text = await response.text();
@@ -103,7 +109,7 @@ export const api = {
     );
   },
   speak: async (text: string, language: "en" | "hi") => {
-    const response = await fetch(`${API_URL}/api/speech/speak`, {
+    const response = await fetch(await endpoint("/api/speech/speak"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, language }),
@@ -124,7 +130,7 @@ export function uploadDocument(
 ) {
   return new Promise<ClaimBundle["documents"][number]>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${API_URL}/api/claims/${claimId}/documents`);
+    xhr.open("POST", `/api/claims/${claimId}/documents`);
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) onProgress(event.loaded / event.total);
     };
